@@ -1,3 +1,7 @@
+def whyrun_supported?
+  true
+end
+
 action :create do
   Chef::Log.info("Make instance via runit #{new_resource.name}")
 

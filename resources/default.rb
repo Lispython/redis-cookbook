@@ -27,6 +27,7 @@ attribute :prefix, :kind_of => String
 attribute :location, :kind_of => String
 attribute :install_dir, :kind_of => String
 attribute :download_dir, :kind_of => String
+attribute :config_file, :kind_of => String
 
 def initialize(*args)
   super

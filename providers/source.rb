@@ -1,3 +1,7 @@
+def whyrun_supported?
+  true
+end
+
 # Install redis package from source
 action :install do
   Chef::Log.info("Install redis server")
@@ -75,7 +79,7 @@ end
 
 
 def load_current_resource
-  @current_resource = Chef::Resource::RedisInstall.new(new_resource.name)
+  @current_resource = Chef::Resource::RedisInstall.new(@new_resource.name)
   @current_resource.version(version)
   @current_resource
 end

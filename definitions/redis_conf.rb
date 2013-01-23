@@ -24,15 +24,10 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
   config_dir = params[:config_dir] || node["redis"]["config_dir"]
   data_dir = params[:data_dir] || node["redis"]["config"]["data_dir"]
 
-  init_d_file = "/etc/init.d/#{params[:name]}"
-  pidfile = "/var/run/#{params[:name]}.pid"
-  exec_file = "#{node["redis"]["install_dir"]}/bin/redis-client"
-  cliexec_file = "#{node["redis"]["install_dir"]}/bin/redis-cli"
-
   if params[:config_file] then
     config_file = "#{params[:config_file]}"
   else
-    config_file = "#{config_dir}/#{params[:name]}.conf"
+    config_file = "#{params[:config_dir] || node["redis"]["config_dir"]}/#{params[:name]}.conf"
   end
 
   # Making redis directory
@@ -59,6 +54,7 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
     group params[:group]
     source params[:template]
     mode 0640
+    action :create
     variables :config => config.to_hash
 
     # Specify location for template
@@ -69,19 +65,4 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
     end
   end
 
-  # Making init.d script
-  template init_d_file do
-    owner params[:user]
-    group params[:group]
-    source params[:init_d_template]
-    mode 0640
-    variables :port => config["port"], :pidfile => pidfile, :config => config_file, :exec_file => exec_file, :cliexec_file => cliexec_file
-
-    # Specify location for template
-    if params[:cookbook]
-      cookbook params[:cookbook]
-    else
-      cookbook "redis"
-    end
-  end
 end
