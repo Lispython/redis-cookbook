@@ -3,4 +3,4 @@ set -e
 
 TARGET_USER=<%= @options[:user] %>
 
-exec chpst -u $TARGET_USER <%= @options[:init_d_file] %>
+exec chpst -u $TARGET_USER <%= @options[:init_d_file] %> restart
