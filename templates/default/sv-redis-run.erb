@@ -2,7 +2,5 @@
 set -e
 
 TARGET_USER=<%= @options[:user] %>
-PID_FILE=<%= @options[:pidfile] %>
-CONFIG_FILE=<%= @options[:config] %>
 
-exec chpst -u $TARGET_USER <%= @exec_file %> $CONFIG_FILE
+exec chpst -u $TARGET_USER <%= @options[:init_d_file] %>
