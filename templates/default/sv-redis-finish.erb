@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+EXEC="<%= @options[:exec_file] %>"
+CLIEXEC="<%= @options[:cliexec_file] %>"
+PIDFILE="<%= @options[:pidfile] %>"
+CONF="<%= @options[:config] %>"
+
+stop(){
+    if [ ! -f $PIDFILE ]
+    then
+        echo "$PIDFILE does not exist, process is not running"
+    else
+        PID=$(cat $PIDFILE)
+        echo "Stopping ..."
+        $CLIEXEC -p $REDISPORT shutdown
+        while [ -x /proc/${PID} ]
+        do
+            echo "Waiting for Redis to shutdown ..."
+            sleep 1
+        done
+        echo "Redis stopped"
+    fi
+}
+
+stop

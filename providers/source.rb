@@ -21,11 +21,14 @@ action :install do
 
   @tarball_file = "#{@download_dir}/#{@tarball_name}"
 
-  Chef::Log.info("Installing Redis #{new_resource.version} from source")
-  self.download()
-  self.unpack()
-  self.build()
-  self.install()
+  Chef::Log.info("Current installed redis #{version()} and candidate version #{@version}")
+  unless version() == @version
+    Chef::Log.info("Installing Redis #{new_resource.version} from source")
+    self.download()
+    self.unpack()
+    self.build()
+    self.install()
+  end
 end
 
 action :uninstall do
@@ -80,6 +83,6 @@ end
 
 def load_current_resource
   @current_resource = Chef::Resource::RedisInstall.new(@new_resource.name)
-  @current_resource.version(version)
+  @current_resource.version(version())
   @current_resource
 end

@@ -2,5 +2,20 @@
 set -e
 
 TARGET_USER=<%= @options[:user] %>
+EXEC="<%= @options[:exec_file] %>"
+CLIEXEC="<%= @options[:cliexec_file] %>"
+PIDFILE="<%= @options[:pidfile] %>"
+CONF="<%= @options[:config] %>"
 
-exec chpst -u $TARGET_USER <%= @options[:init_d_file] %> restart
+start(){
+    if [ -f $PIDFILE ]
+    then
+        echo "$PIDFILE exists, process is already running or crashed"
+    else
+        echo "Starting Redis server..."
+        $EXEC $CONF
+    fi
+}
+
+
+exec chpst -u $TARGET_USER $EXEC $CONF

@@ -35,34 +35,43 @@ action :create do
     config config
   end
 
-  redis_installer = redis_install "redis-server" do
-    version redis_new_resource.version
-    action :install
-  end
-
   init_d_file = "/etc/init.d/#{redis_new_resource.name}"
   pidfile = "/var/run/#{redis_new_resource.name}.pid"
   exec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-server"
   cliexec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-cli"
 
-  redis_spawner redis_new_resource.name do
-    init_d_file init_d_file
-    pidfile pidfile
-    port port
-    exec_file exec_file
-    cliexec_file cliexec_file
-    config_file config_file
-    cookbook params[:cookbook]
-    notifies :restart, resources(:service => redis_new_resource.name)
-  end
-
   runit_service redis_new_resource.name do
     template_name "redis"
     run_restart true
-    action :restart
+    action :nothing
     options :user => redis_new_resource.user,
     :group => redis_new_resource.group,
     :init_d_file => init_d_file,
-    :log_folder => "/var/log/runit/redis"
+    :log_folder => "/var/log/runit/redis",
+    :pidfile => pidfile,
+    :exec_file => exec_file,
+    :cliexec_file => cliexec_file,
+    :config => config_file
+  end
+
+  redis_install "redis-server" do
+    version redis_new_resource.version
+    action :install
+    notifies :restart, resources(:service => redis_new_resource.name)
+  end
+end
+
+
+def load_current_resource
+  @current_resource = Chef::Resource::Redis.new(@new_resource.name)
+  return @current_resource
+end
+
+# Check current installed version
+def current_installed_version
+  @current_installed_version ||= begin
+    return node["redis"]["version"]
+  rescue Chef::Exceptions::ShellCommandFailed
+  rescue Mixlib::ShellOut::ShellCommandFailed
   end
 end
