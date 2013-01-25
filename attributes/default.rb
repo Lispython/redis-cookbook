@@ -38,6 +38,7 @@ default["redis"]["config"]["databases"] = 16
 # LOGGING
 default["redis"]["config"]["loglevel"] = "notice"
 default["redis"]["config"]["logfile"] = "stdout"
+default["redis"]["config"]["logfolder"] = "/var/run/log"
 default["redis"]["config"]["syslog"]["enabled"] = true
 default["redis"]["config"]["syslog"]["ident"] = "redis"
 default["redis"]["config"]["syslog"]["facility"] = "local0"

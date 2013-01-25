@@ -34,7 +34,7 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
   directory config_dir do
     owner params[:user]
     group params[:group]
-    mode 0640
+    mode 0655
     recursive true
     action :create
   end
@@ -43,7 +43,7 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
   directory data_dir do
     owner params[:user]
     group params[:group]
-    mode 0640
+    mode 0755
     recursive true
     action :create
   end
@@ -53,7 +53,7 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
     owner params[:user]
     group params[:group]
     source params[:template]
-    mode 0640
+    mode 0755
     action :create
     variables :config => config.to_hash
 
@@ -64,5 +64,4 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
       cookbook "redis"
     end
   end
-
 end

@@ -47,7 +47,7 @@ action :create do
     options :user => redis_new_resource.user,
     :group => redis_new_resource.group,
     :init_d_file => init_d_file,
-    :log_folder => "/var/log/runit/redis",
+    :log_folder => "/var/log/runit/#{redis_new_resource.name}",
     :pidfile => pidfile,
     :exec_file => exec_file,
     :cliexec_file => cliexec_file,
