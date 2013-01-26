@@ -23,7 +23,7 @@ In metadata.rb you should declare a dependency on this cookbook:
 
 depends "redis"
 
-Include ``recipe[redis]`` to you runlist.
+Include ``recipe[redis::user]`` and ``recipe[redis]``  to you runlist.
 
 To create many servers on one node overrwrite `node["redis"]["servers"]` attribute.
 
@@ -150,6 +150,11 @@ instance
 --------
 
 Recipe to install simple redis instance.
+
+user
+----
+
+Recipe to create users
 
 
 See also
