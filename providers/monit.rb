@@ -66,10 +66,16 @@ action :create do
     cookbook "redis"
   end
 
+  service redis_new_resource.name do
+    supports :start => true, :restart => true, :stop => true
+    provider Chef::Provider::MonitMonit
+    action :enable
+  end
+
   redis_install "redis-server" do
     version redis_new_resource.version
     action :install
-    notifies :restart, resources(:service => "monit")
+    notifies :restart, resources(:service => redis_new_resource.name)
   end
 end
 
