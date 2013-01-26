@@ -14,6 +14,6 @@ node["redis"]["servers"].each() do |server|
   redis "redis-#{server["port"]}" do
     action :create
     config :port => server["port"], "bind" => server["bind"]
-    provider Chef::Provider::RedisRunit
+    provider node["redis"]["provider"]
   end
 end

@@ -5,11 +5,12 @@ def whyrun_supported?
 end
 
 action :create do
-  Chef::Log.info("Make instance via runit #{new_resource.name}")
+  Chef::Log.info("Make instance via monit provider #{new_resource.name}")
 
   if @current_resource
     Chef::Log.info("#{@current_resource} already exist")
   end
+  run_context.include_recipe "monit"
 
   redis_new_resource = new_resource
 
@@ -24,8 +25,6 @@ action :create do
   else
     config_file = "#{redis_new_resource.config_dir || node["redis"]["config_dir"]}/#{redis_new_resource.name}.conf"
   end
-
-  config["daemonize"] = "no"
 
   redis_conf redis_new_resource.name do
     user redis_new_resource.user
@@ -42,23 +41,35 @@ action :create do
   exec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-server"
   cliexec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-cli"
 
-  runit_service redis_new_resource.name do
-    template_name "redis"
-    action :nothing
-    options(:user => redis_new_resource.user,
-            :group => redis_new_resource.group,
-            :init_d_file => init_d_file,
-            :log_folder => "/var/log/runit/#{redis_new_resource.name}",
-            :pidfile => pidfile,
-            :exec_file => exec_file,
-            :cliexec_file => cliexec_file,
-            :config => config_file)
+  redis_spawner redis_new_resource.name do
+    init_d_file init_d_file
+    pidfile pidfile
+    port port
+    exec_file exec_file
+    cliexec_file cliexec_file
+    config_file config_file
+    cookbook params[:cookbook]
+    notifies :restart, resources(:service => redis_new_resource.name), :delayed
+  end
+
+  monit_conf "#{redis_new_resource.name}" do
+    template "redis-monit.erb"
+    config(:name => redis_new_resource.name,
+           :user => redis_new_resource.user,
+           :group => redis_new_resource.group,
+           :init_d_file => init_d_file,
+           :log_folder => "/var/log/runit/#{redis_new_resource.name}",
+           :pidfile => pidfile,
+           :exec_file => exec_file,
+           :cliexec_file => cliexec_file,
+           :config => config)
+    cookbook "redis"
   end
 
   redis_install "redis-server" do
     version redis_new_resource.version
     action :install
-    notifies :restart, resources(:service => redis_new_resource.name), :delayed
+    notifies :restart, resources(:service => "monit")
   end
 end
 

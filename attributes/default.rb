@@ -17,9 +17,9 @@ default["redis"]["install_dir"] = "/usr/local"
 default["redis"]["version"] = "2.6.9"
 default["redis"]["user"] = "redis"
 default["redis"]["group"] = "redis"
+default["redis"]["provider"] = "redis_base"
 default["redis"]["config_file"] = "/etc/redis/redis.conf"
 default["redis"]["config_dir"] = "/etc/redis"
-
 
 # Config parameters
 # MAIN
