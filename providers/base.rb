@@ -51,7 +51,7 @@ action :create do
     cliexec_file cliexec_file
     config_file config_file
     cookbook params[:cookbook]
-    notifies :restart, resources(:service => redis_new_resource.name)
+    notifies :restart, resources(:service => redis_new_resource.name), :delayed
   end
 
   service redis_new_resource.name do

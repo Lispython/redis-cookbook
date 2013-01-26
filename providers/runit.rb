@@ -57,7 +57,7 @@ action :create do
   redis_install "redis-server" do
     version redis_new_resource.version
     action :install
-    notifies :restart, resources(:service => redis_new_resource.name)
+    notifies :restart, resources(:service => redis_new_resource.name), :delayed
   end
 end
 
