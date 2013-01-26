@@ -17,5 +17,5 @@ start(){
     fi
 }
 
-
-exec chpst -u $TARGET_USER $EXEC $CONF
+exec 2>&1
+exec <%= @options[:exec_file] %> <%= @options[:config] %>

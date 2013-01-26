@@ -25,6 +25,8 @@ action :create do
     config_file = "#{redis_new_resource.config_dir || node["redis"]["config_dir"]}/#{redis_new_resource.name}.conf"
   end
 
+  config["daemonize"] = "no"
+
   redis_conf redis_new_resource.name do
     user redis_new_resource.user
     group redis_new_resource.group
@@ -42,16 +44,15 @@ action :create do
 
   runit_service redis_new_resource.name do
     template_name "redis"
-    run_restart true
     action :nothing
-    options :user => redis_new_resource.user,
-    :group => redis_new_resource.group,
-    :init_d_file => init_d_file,
-    :log_folder => "/var/log/runit/#{redis_new_resource.name}",
-    :pidfile => pidfile,
-    :exec_file => exec_file,
-    :cliexec_file => cliexec_file,
-    :config => config_file
+    options(:user => redis_new_resource.user,
+            :group => redis_new_resource.group,
+            :init_d_file => init_d_file,
+            :log_folder => "/var/log/runit/#{redis_new_resource.name}",
+            :pidfile => pidfile,
+            :exec_file => exec_file,
+            :cliexec_file => cliexec_file,
+            :config => config_file)
   end
 
   redis_install "redis-server" do
