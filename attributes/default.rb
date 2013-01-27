@@ -25,7 +25,8 @@ default["redis"]["config_dir"] = "/etc/redis"
 # MAIN
 default["redis"]["config"]["data_dir"] = "/var/run/redis"
 default["redis"]["config"]["daemonize"] = "yes"
-default["redis"]["config"]["pidfile"] = "/var/run/redis.pid"
+default["redis"]["config"]["pid_dir"] = "/var/run"
+default["redis"]["config"]["pidfile"] = "#{node["redis"]["config"]["pid_dir"]}/redis.pid"
 default["redis"]["config"]["port"] = 6379
 default["redis"]["config"]["timeout"] = 0
 default["redis"]["config"]["bind"] = "127.0.0.1"
@@ -99,14 +100,4 @@ default["redis"]["config"]["client-output-buffer-limits"] = {
 
 
 # SERVERS CUSTOMIZING
-default["redis"]["servers"] = [{
-                                 "name" => "redis-1",
-                                 "bind" => "0.0.0.0",
-                                 "port" => 6379
-                               },
-                               {
-                                 "name" => "redis-2",
-                                 "bind" => "0.0.0.0",
-                                 "port" => 6390
-                               },
-                              ]
+default["redis"]["servers"] = []

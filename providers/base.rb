@@ -23,6 +23,14 @@ action :create do
     config_file = "#{redis_new_resource.config_dir || node["redis"]["config_dir"]}/#{redis_new_resource.name}.conf"
   end
 
+
+  init_d_file = "/etc/init.d/#{redis_new_resource.name}"
+  pidfile = "#{node["redis"]["config"]["pid_dir"]}/#{redis_new_resource.name}.pid"
+  exec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-server"
+  cliexec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-cli"
+
+  config["pidfile"] = pidfile
+
   redis_conf redis_new_resource.name do
     user redis_new_resource.user
     group redis_new_resource.group
@@ -38,10 +46,6 @@ action :create do
     action :install
   end
 
-  init_d_file = "/etc/init.d/#{redis_new_resource.name}"
-  pidfile = "/var/run/#{redis_new_resource.name}.pid"
-  exec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-server"
-  cliexec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-cli"
 
   redis_spawner redis_new_resource.name do
     init_d_file init_d_file

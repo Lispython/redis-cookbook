@@ -1,9 +1,8 @@
 check process <%= @name %>
    with pidfile <%= @pidfile %>
-   group <%= @group %>
    start program = "<%= @init_d_file %> start"
    stop program = "<%= @init_d_file %> stop"
-   <% if @bind %>
-   if failed host <%= @bind %> port <%= @port %> then restart
+   <% if @config["bind"] %>
+   if failed host <%= @config["bind"] %> port <%= @config["port"] %> then restart
    <% end %>
    if 5 restarts within 5 cycles then timeout

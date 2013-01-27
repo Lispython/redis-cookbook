@@ -25,6 +25,12 @@ action :create do
     config_file = "#{redis_new_resource.config_dir || node["redis"]["config_dir"]}/#{redis_new_resource.name}.conf"
   end
 
+  init_d_file = "/etc/init.d/#{redis_new_resource.name}"
+  pidfile = "#{node["redis"]["config"]["pid_dir"]}/#{redis_new_resource.name}.pid"
+  exec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-server"
+  cliexec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-cli"
+
+  config["pidfile"] = pidfile
   config["daemonize"] = "no"
 
   redis_conf redis_new_resource.name do
@@ -37,10 +43,6 @@ action :create do
     config config
   end
 
-  init_d_file = "/etc/init.d/#{redis_new_resource.name}"
-  pidfile = "/var/run/#{redis_new_resource.name}.pid"
-  exec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-server"
-  cliexec_file = "#{redis_new_resource.install_dir || node["redis"]["install_dir"]}/bin/redis-cli"
 
   runit_service redis_new_resource.name do
     template_name "redis"
