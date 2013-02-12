@@ -53,7 +53,6 @@ action :create do
     cliexec_file cliexec_file
     config_file config_file
     cookbook params[:cookbook]
-    notifies :restart, resources(:service => redis_new_resource.name), :delayed
   end
 
   monit_conf "#{redis_new_resource.name}" do
@@ -73,6 +72,7 @@ action :create do
   service redis_new_resource.name do
     supports :start => true, :restart => true, :stop => true
     provider Chef::Provider::MonitMonit
+    action :enable
   end
 
   redis_install "redis-server" do
