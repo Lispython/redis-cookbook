@@ -72,7 +72,6 @@ action :create do
   service redis_new_resource.name do
     supports :start => true, :restart => true, :stop => true
     provider Chef::Provider::MonitMonit
-    action :enable
   end
 
   redis_install "redis-server" do
