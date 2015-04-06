@@ -50,11 +50,13 @@ action :create do
   redis_spawner redis_new_resource.name do
     init_d_file init_d_file
     pidfile pidfile
-    port port
+    port config[:port]
+    host config[:bind]
     exec_file exec_file
     cliexec_file cliexec_file
     config_file config_file
     cookbook params[:cookbook]
+    pass config[:requirepass]
     notifies :restart, resources(:service => redis_new_resource.name), :delayed
   end
 

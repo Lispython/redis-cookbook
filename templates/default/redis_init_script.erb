@@ -27,7 +27,7 @@ stop(){
     else
         PID=$(cat $PIDFILE)
         echo "Stopping ..."
-        $CLIEXEC -p $REDISPORT shutdown
+        $CLIEXEC -p $REDISPORT <% if @host %>-h <%= @host %><% end %> <% if @pass %>-a <%= @pass %><% end %> shutdown
         while [ -x /proc/${PID} ]
         do
             echo "Waiting for Redis to shutdown ..."
