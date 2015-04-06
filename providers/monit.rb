@@ -48,7 +48,7 @@ action :create do
   redis_spawner redis_new_resource.name do
     init_d_file init_d_file
     pidfile pidfile
-    port port
+    port config[:port]
     exec_file exec_file
     cliexec_file cliexec_file
     config_file config_file

@@ -29,7 +29,7 @@ port <%= @config["port"] %>
 # specified all the interfaces will listen for incoming connections.
 #
 <% if not @config["listen_socket"] %>
-bind <%= @config["bind"] %>
+bind <%= @config["bind"] %> <% if node["redis"]["version"] > "2.8" %>127.0.0.1<% end %>
 <% end %>
 
 # Specify the path for the unix socket that will be used to listen for
@@ -56,7 +56,11 @@ loglevel <%= @config["loglevel"] %>
 # Specify the log file name. Also 'stdout' can be used to force
 # Redis to log on the standard output. Note that if you use standard
 # output for logging but daemonize, logs will be sent to /dev/null
+<% if @config["logfile"] == "" %>
+logfile ""
+<% else %>
 logfile <%= @config["logfile"] %>
+<% end %>
 
 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
 # and optionally update the other syslog parameters to suit your needs.
@@ -98,8 +102,12 @@ databases <%= @config["databases"] %>
 #
 #   save ""
 
+<% if @config['save'].length>0 %>
 <% @config['save'].each do |save| %>
 save <%= save[0] %> <%= save[1] %>
+<% end %>
+<% else %>
+save ""
 <% end %>
 
 # By default Redis will stop accepting writes if RDB snapshots are enabled
@@ -153,6 +161,16 @@ dir <%= @config["data_dir"] %>
 # different interval, or to listen to another port, and so on.
 #
 # slaveof <masterip> <masterport>
+
+<% if @config["slaveof"]["ip"] and @config["slaveof"]["port"] %>
+slaveof <%= @config["slaveof"]["ip"] %> <%= @config["slaveof"]["port"] %>
+
+<% if @config["slaveof"]["masterauth"] %>
+masterauth <%= @config["slaveof"]["masterauth"] %>
+<% end %>
+
+<% end %>
+
 
 # If the master is password protected (using the "requirepass" configuration
 # directive below) it is possible to tell the slave to authenticate before
@@ -356,6 +374,10 @@ appendonly no
 
 # The name of the append only file (default: "appendonly.aof")
 # appendfilename appendonly.aof
+
+<% if @config["appendonly"] and @config["appendfilename"] %>
+appendfilename <%= @config["appendfilename"] %>
+<% end %>
 
 # The fsync() call tells the Operating System to actually write data on disk
 # instead to wait for more data in the output buffer. Some OS will really flush

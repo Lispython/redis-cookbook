@@ -9,12 +9,14 @@
 
 # Global params
 
-default["redis"]['packages']['location'] = "http://redis.googlecode.com/files"
+#default["redis"]['packages']['location'] = "http://redis.googlecode.com/files"
+default["redis"]["packages"]["location"] = "http://download.redis.io/releases"
 default["redis"]['packages']['prefix'] = "redis-"
 default["redis"]["download_dir"] = "/tmp"
 default["redis"]["install_dir"] = "/usr/local"
 
-default["redis"]["version"] = "2.6.9"
+default["redis"]["version"] = "2.6.14"
+#default["redis"]["version"] = "2.8.19"
 default["redis"]["user"] = "redis"
 default["redis"]["group"] = "redis"
 default["redis"]["provider"] = "redis_base"
@@ -23,7 +25,7 @@ default["redis"]["config_dir"] = "/etc/redis"
 
 # Config parameters
 # MAIN
-default["redis"]["config"]["data_dir"] = "/var/run/redis"
+default["redis"]["config"]["data_dir"] = "/var/lib/redis"
 default["redis"]["config"]["daemonize"] = "yes"
 default["redis"]["config"]["pid_dir"] = "/var/run"
 default["redis"]["config"]["pidfile"] = "#{node["redis"]["config"]["pid_dir"]}/redis.pid"
@@ -39,7 +41,7 @@ default["redis"]["config"]["databases"] = 16
 # LOGGING
 default["redis"]["config"]["loglevel"] = "notice"
 default["redis"]["config"]["logfile"] = "stdout"
-default["redis"]["config"]["logfolder"] = "/var/run/log"
+default["redis"]["config"]["logfolder"] = "/var/log/redis"
 default["redis"]["config"]["syslog"]["enabled"] = true
 default["redis"]["config"]["syslog"]["ident"] = "redis"
 default["redis"]["config"]["syslog"]["facility"] = "local0"
@@ -60,6 +62,7 @@ default["redis"]["config"]["requirepass"] = nil
 default["redis"]["config"]["slave-serve-stale-data"] = "yes"
 default["redis"]["config"]["slave-read-only"] = "yes"
 default["redis"]["config"]["slave-priority"] = 100
+default["redis"]["config"]["slaveof"] = {}
 
 # LIMITS
 default["redis"]["config"]["maxclients"] = nil # 1000
@@ -101,3 +104,6 @@ default["redis"]["config"]["client-output-buffer-limits"] = {
 
 # SERVERS CUSTOMIZING
 default["redis"]["servers"] = []
+
+default["redis"]["need_backup"] = false
+default["redis"]["backup_tmp_dir"] = "/tmp/redis_backups/"

@@ -30,6 +30,10 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
     config_file = "#{params[:config_dir] || node["redis"]["config_dir"]}/#{params[:name]}.conf"
   end
 
+  if config['appendonly']
+    config["appendfilename"] = "dump-#{params[:name]}.aof"
+  end
+
   # Making redis directory
   directory config_dir do
     owner params[:user]
@@ -41,6 +45,15 @@ define :redis_conf, :name => nil, :template => "redis.conf.erb", :config => {}, 
 
   # Making config dir
   directory data_dir do
+    owner params[:user]
+    group params[:group]
+    mode 0755
+    recursive true
+    action :create
+  end
+
+  # Making log dir
+  directory node["redis"]["config"]["logfolder"] do
     owner params[:user]
     group params[:group]
     mode 0755
